@@ -13,9 +13,9 @@
 #SBATCH --output=./logs/python_array_%A_%a.err
 #SBATCH --partition=High
 
-MODEL_NAME=""
-DATA_PATH=""
-IMAGE_FOLDER=""
+MODEL_NAME="/group/mayi/tianzhe/checkpoints/Llama-3.2-11B-Vision-Instruct"
+DATA_PATH="/group/mayi/tianzhe/project/RL-MLLM/data_collection/EQN_Data_image_200k/general_points_image.json"
+IMAGE_FOLDER="/group/mayi/tianzhe/project/RL-MLLM/data_collection/EQN_Data_image_200k/General_Points_Images"
 # MODEL_NAME="meta-llama/Llama-3.2-90B-Vision-Instruct"
 
 # LLaMA3.2-Vision Does not support flash-attnetion2 yet.
@@ -26,7 +26,7 @@ which python
 
 export PYTHONPATH=src:$PYTHONPATH
 
-deepspeed src/training/train.py \
+deepspeed --include localhost:4,5,6,7 src/training/train.py \
     --deepspeed scripts/zero3_offload.json \
     --model_id ${MODEL_NAME} \
     --data_path ${DATA_PATH} \
@@ -37,7 +37,7 @@ deepspeed src/training/train.py \
     --freeze_vision_tower False \
     --freeze_llm False \
     --bf16 True \
-    --output_dir output/sft_language_400k_1e-6 \
+    --output_dir output/sft_vl_200k_1e-6 \
     --num_train_epochs 1 \
     --per_device_train_batch_size 16 \
     --gradient_accumulation_steps 1 \

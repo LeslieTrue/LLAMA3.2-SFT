@@ -1,3 +1,6 @@
 deepspeed
 torch
 accelerate
+decord
+ujson
+tensorboard

@@ -195,10 +195,12 @@ class DataCollatorForSupervisedDataset(object):
             batch_pixel_values.append(example.get("pixel_values"))
             batch_aspect_ratio_ids.append(example.get("aspect_ratio_ids"))
             batch_aspect_ratio_mask.append(example.get("aspect_ratio_mask"))
-            batch_cross_attention_mask.append(
-                example.get("cross_attention_mask", [None])[0] if example.get("cross_attention_mask") else None
-            )
-                
+            try:
+                batch_cross_attention_mask.append(
+                    example.get("cross_attention_mask")[0]
+                )
+            except:
+                batch_cross_attention_mask.append(None)
         input_ids = pad_sequence(
             batch_input_ids, padding_side='right', padding_value=self.pad_token_id
         )
